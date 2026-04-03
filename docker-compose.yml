@@ -1,8 +1,8 @@
 services:
   database:
     networks:
-      - job
-    container_name: job-mongodb
+      - fitematch
+    container_name: fitematch-job-database
     image: mongo:latest
     env_file:
       - .env
@@ -17,15 +17,13 @@ services:
     depends_on:
       - database
     networks:
-      - job
-    container_name: job-api
+      - fitematch
+    container_name: fitematch-job-api
     build:
       context: .
     image: api
     env_file:
       - .env
-    environment:
-      APPLICATION_PORT: ${APPLICATION_PORT}
     restart: always
     volumes:
       - ./:/app
@@ -34,5 +32,5 @@ services:
       - ${APPLICATION_BIND_PORT}:${APPLICATION_PORT}
 
 networks:
-  job:
+  fitematch:
     driver: bridge

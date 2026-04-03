@@ -44,7 +44,7 @@ $ cp .env.example .env
 
 Make sure you have [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
 
-For create and run containers.
+For create and run containers type the command.
 
 ```bash
 # Up and start all application containers.
