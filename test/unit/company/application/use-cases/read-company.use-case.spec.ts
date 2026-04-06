@@ -14,6 +14,20 @@ describe('ReadCompanyUseCase', () => {
     id: companyId,
     slug: 'tecfit',
     name: 'Tecfit',
+    address: {
+      street: 'Rua das Flores',
+      number: '123',
+      neighborhood: 'Centro',
+      city: 'Sao Paulo',
+      state: 'SP',
+      country: 'Brasil',
+    },
+    social: {
+      facebook: 'https://facebook.com/tecfit',
+      instagram: 'https://instagram.com/tecfit',
+      linkedin: 'https://linkedin.com/company/tecfit',
+      twitter: 'https://x.com/tecfit',
+    },
     role: CompanyRoleEnum.MAIN,
     logo: '/images/logo.png',
     cover: '/images/cover.png',
@@ -35,8 +49,8 @@ describe('ReadCompanyUseCase', () => {
 
     const result = await useCase.execute(companyId);
 
-    expect(repository.findById).toHaveBeenCalledTimes(1);
-    expect(repository.findById).toHaveBeenCalledWith(companyId);
+    expect(repository.findById.mock.calls).toHaveLength(1);
+    expect(repository.findById.mock.calls[0]).toEqual([companyId]);
     expect(result).toEqual(companyRecord);
   });
 
@@ -44,8 +58,10 @@ describe('ReadCompanyUseCase', () => {
     repository.findById.mockResolvedValue(null);
 
     await expect(useCase.execute(companyId)).rejects.toThrow(NotFoundException);
-    await expect(useCase.execute(companyId)).rejects.toThrow('Company not found!');
-    expect(repository.findById).toHaveBeenCalledWith(companyId);
+    await expect(useCase.execute(companyId)).rejects.toThrow(
+      'Company not found!',
+    );
+    expect(repository.findById.mock.calls[0]).toEqual([companyId]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -53,6 +69,6 @@ describe('ReadCompanyUseCase', () => {
     repository.findById.mockRejectedValue(error);
 
     await expect(useCase.execute(companyId)).rejects.toThrow(error);
-    expect(repository.findById).toHaveBeenCalledWith(companyId);
+    expect(repository.findById.mock.calls[0]).toEqual([companyId]);
   });
 });

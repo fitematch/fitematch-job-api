@@ -21,8 +21,8 @@ describe('DeleteCompanyUseCase', () => {
 
     const result = await useCase.execute(companyId);
 
-    expect(repository.delete).toHaveBeenCalledTimes(1);
-    expect(repository.delete).toHaveBeenCalledWith(companyId);
+    expect(repository.delete.mock.calls).toHaveLength(1);
+    expect(repository.delete.mock.calls[0]).toEqual([companyId]);
     expect(result).toBe(true);
   });
 
@@ -30,8 +30,10 @@ describe('DeleteCompanyUseCase', () => {
     repository.delete.mockResolvedValue(false);
 
     await expect(useCase.execute(companyId)).rejects.toThrow(NotFoundException);
-    await expect(useCase.execute(companyId)).rejects.toThrow('Company not found!');
-    expect(repository.delete).toHaveBeenCalledWith(companyId);
+    await expect(useCase.execute(companyId)).rejects.toThrow(
+      'Company not found!',
+    );
+    expect(repository.delete.mock.calls[0]).toEqual([companyId]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -39,6 +41,6 @@ describe('DeleteCompanyUseCase', () => {
     repository.delete.mockRejectedValue(error);
 
     await expect(useCase.execute(companyId)).rejects.toThrow(error);
-    expect(repository.delete).toHaveBeenCalledWith(companyId);
+    expect(repository.delete.mock.calls[0]).toEqual([companyId]);
   });
 });

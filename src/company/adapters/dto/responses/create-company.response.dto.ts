@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CompanyRoleEnum } from '@src/company/applications/contracts/company-role.enum';
 import { CompanyStatusEnum } from '@src/company/applications/contracts/company-status.enum';
+import {
+  CompanyAddressDto as CompanyAddressResponseDto,
+  CompanySocialDto as CompanySocialResponseDto,
+} from '@src/company/adapters/dto/company-details.dto';
 
 export class CreateCompanyResponseDto {
   @ApiProperty()
@@ -11,6 +15,12 @@ export class CreateCompanyResponseDto {
 
   @ApiProperty()
   name!: string;
+
+  @ApiProperty({ type: CompanyAddressResponseDto })
+  address!: CompanyAddressResponseDto;
+
+  @ApiProperty({ type: CompanySocialResponseDto })
+  social!: CompanySocialResponseDto;
 
   @ApiProperty({ enum: CompanyRoleEnum })
   role!: CompanyRoleEnum;

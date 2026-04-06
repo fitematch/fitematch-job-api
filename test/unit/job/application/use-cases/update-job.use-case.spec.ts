@@ -3,7 +3,7 @@ import type { ReadCompanyRepositoryInterface } from '@src/company/applications/c
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 import { CompanyRoleEnum } from '@src/company/applications/contracts/company-role.enum';
 import { CompanyStatusEnum } from '@src/company/applications/contracts/company-status.enum';
-import type { JobPayload } from '@src/job/applications/contracts/job-payload.interface';
+import type { UpdateJobPayload } from '@src/job/applications/contracts/job-payload.interface';
 import type { JobRecord } from '@src/job/applications/contracts/job-record.interface';
 import { JobRoleEnum } from '@src/job/applications/contracts/job-role.enum';
 import { JobStatusEnum } from '@src/job/applications/contracts/job-status.enum';
@@ -15,12 +15,21 @@ describe('UpdateJobUseCase', () => {
   let repository: jest.Mocked<UpdateJobRepositoryInterface>;
   let companyRepository: jest.Mocked<ReadCompanyRepositoryInterface>;
 
+  const jobBenefits = {
+    salary: 2500,
+    transportation: true,
+    alimentation: true,
+    health: true,
+    parking: false,
+    bonus: 'PLR trimestral',
+  };
+
   const jobId = 'job-id';
-  const updateInput: Partial<JobPayload> = {
+  const updateInput: UpdateJobPayload = {
     title: 'Backend Freelance',
     slots: 5,
     role: JobRoleEnum.FREELANCE,
-    status: JobStatusEnum.DISABLED,
+    status: JobStatusEnum.FREEZE,
   };
 
   const updatedJob: JobRecord = {
@@ -29,8 +38,9 @@ describe('UpdateJobUseCase', () => {
     slug: 'backend-intern',
     title: 'Backend Freelance',
     slots: 5,
+    benefits: jobBenefits,
     role: JobRoleEnum.FREELANCE,
-    status: JobStatusEnum.DISABLED,
+    status: JobStatusEnum.FREEZE,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-02T00:00:00.000Z'),
   };
@@ -39,6 +49,20 @@ describe('UpdateJobUseCase', () => {
     id: 'company-id',
     slug: 'tecfit',
     name: 'Tecfit',
+    address: {
+      street: 'Rua das Flores',
+      number: '123',
+      neighborhood: 'Centro',
+      city: 'Sao Paulo',
+      state: 'SP',
+      country: 'Brasil',
+    },
+    social: {
+      facebook: 'https://facebook.com/tecfit',
+      instagram: 'https://instagram.com/tecfit',
+      linkedin: 'https://linkedin.com/company/tecfit',
+      twitter: 'https://x.com/tecfit',
+    },
     role: CompanyRoleEnum.MAIN,
     logo: '/images/logo.png',
     cover: '/images/cover.png',
@@ -62,14 +86,18 @@ describe('UpdateJobUseCase', () => {
 
     const result = await useCase.execute(jobId, updateInput);
 
-    expect(repository.update).toHaveBeenCalledTimes(1);
-    expect(repository.update).toHaveBeenCalledWith(jobId, updateInput);
-    expect(companyRepository.findById).toHaveBeenCalledWith(updatedJob.companyId);
+    expect(repository.update.mock.calls).toHaveLength(1);
+    expect(repository.update.mock.calls[0]).toEqual([jobId, updateInput]);
+    expect(companyRepository.findById.mock.calls[0]).toEqual([
+      updatedJob.companyId,
+    ]);
     expect(result).toEqual({
       ...updatedJob,
       company: {
         slug: companyRecord.slug,
         name: companyRecord.name,
+        address: companyRecord.address,
+        social: companyRecord.social,
         role: companyRecord.role,
         logo: companyRecord.logo,
         cover: companyRecord.cover,
@@ -87,7 +115,7 @@ describe('UpdateJobUseCase', () => {
     await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(
       'Job not found!',
     );
-    expect(repository.update).toHaveBeenCalledWith(jobId, updateInput);
+    expect(repository.update.mock.calls[0]).toEqual([jobId, updateInput]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -95,6 +123,6 @@ describe('UpdateJobUseCase', () => {
     repository.update.mockRejectedValue(error);
 
     await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(error);
-    expect(repository.update).toHaveBeenCalledWith(jobId, updateInput);
+    expect(repository.update.mock.calls[0]).toEqual([jobId, updateInput]);
   });
 });

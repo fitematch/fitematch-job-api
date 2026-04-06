@@ -1,17 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   MaxLength,
   Min,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { JobRoleEnum } from '@src/job/applications/contracts/job-role.enum';
 import { JobStatusEnum } from '@src/job/applications/contracts/job-status.enum';
+import { CreateJobBenefitsDto } from './job-details.dto';
 
 export class CreateJobDto {
   @ApiProperty()
@@ -38,6 +42,12 @@ export class CreateJobDto {
   @Min(1)
   slots!: number;
 
+  @ApiProperty({ type: CreateJobBenefitsDto })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateJobBenefitsDto)
+  benefits!: CreateJobBenefitsDto;
+
   @ApiProperty({ example: false, required: false, default: false })
   @IsOptional()
   @IsBoolean()
@@ -47,7 +57,7 @@ export class CreateJobDto {
   @IsEnum(JobRoleEnum)
   role!: JobRoleEnum;
 
-  @ApiProperty({ example: JobStatusEnum.ENABLED, enum: JobStatusEnum })
+  @ApiProperty({ example: JobStatusEnum.PENDING, enum: JobStatusEnum })
   @IsEnum(JobStatusEnum)
   status!: JobStatusEnum;
 }

@@ -39,8 +39,8 @@ describe('ListApplyUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(repository.list).toHaveBeenCalledTimes(1);
-    expect(repository.list).toHaveBeenCalledWith();
+    expect(repository.list.mock.calls).toHaveLength(1);
+    expect(repository.list.mock.calls[0]).toEqual([]);
     expect(result).toEqual(applies);
   });
 
@@ -49,7 +49,7 @@ describe('ListApplyUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(repository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
     expect(result).toEqual([]);
   });
 
@@ -58,6 +58,6 @@ describe('ListApplyUseCase', () => {
     repository.list.mockRejectedValue(error);
 
     await expect(useCase.execute()).rejects.toThrow(error);
-    expect(repository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
   });
 });

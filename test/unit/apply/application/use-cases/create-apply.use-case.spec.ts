@@ -36,8 +36,8 @@ describe('CreateApplyUseCase', () => {
 
     const result = await useCase.execute(applyInput);
 
-    expect(repository.create).toHaveBeenCalledTimes(1);
-    expect(repository.create).toHaveBeenCalledWith(applyInput);
+    expect(repository.create.mock.calls).toHaveLength(1);
+    expect(repository.create.mock.calls[0]).toEqual([applyInput]);
     expect(result).toEqual(applyRecord);
   });
 
@@ -54,7 +54,7 @@ describe('CreateApplyUseCase', () => {
 
     await useCase.execute(frozenApplyInput);
 
-    expect(repository.create).toHaveBeenCalledWith(frozenApplyInput);
+    expect(repository.create.mock.calls[0]).toEqual([frozenApplyInput]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -62,6 +62,6 @@ describe('CreateApplyUseCase', () => {
     repository.create.mockRejectedValue(error);
 
     await expect(useCase.execute(applyInput)).rejects.toThrow(error);
-    expect(repository.create).toHaveBeenCalledWith(applyInput);
+    expect(repository.create.mock.calls[0]).toEqual([applyInput]);
   });
 });

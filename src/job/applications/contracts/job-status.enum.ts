@@ -1,4 +1,6 @@
 export enum JobStatusEnum {
-  ENABLED = 'enabled',
-  DISABLED = 'disabled',
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  FREEZE = 'freeze',
+  CANCELLED = 'cancelled',
 }

@@ -5,7 +5,10 @@ import { DeleteApplyController } from '@src/apply/adapters/controllers/delete-ap
 import { ListApplyController } from '@src/apply/adapters/controllers/list-apply.controller';
 import { ReadApplyController } from '@src/apply/adapters/controllers/read-apply.controller';
 import { UpdateApplyController } from '@src/apply/adapters/controllers/update-apply.controller';
-import { ApplyEntity, ApplySchema } from '@src/apply/domains/schemas/apply.schema';
+import {
+  ApplyEntity,
+  ApplySchema,
+} from '@src/apply/domains/schemas/apply.schema';
 import { applyProviders } from '@src/apply/apply.providers';
 
 @Module({

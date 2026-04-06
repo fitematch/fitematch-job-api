@@ -21,6 +21,20 @@ describe('UpdateCompanyUseCase', () => {
     id: companyId,
     slug: 'tecfit',
     name: 'Tecfit Updated',
+    address: {
+      street: 'Rua das Flores',
+      number: '123',
+      neighborhood: 'Centro',
+      city: 'Sao Paulo',
+      state: 'SP',
+      country: 'Brasil',
+    },
+    social: {
+      facebook: 'https://facebook.com/tecfit',
+      instagram: 'https://instagram.com/tecfit',
+      linkedin: 'https://linkedin.com/company/tecfit',
+      twitter: 'https://x.com/tecfit',
+    },
     role: CompanyRoleEnum.MAIN,
     logo: '/images/logo.png',
     cover: '/images/updated-cover.png',
@@ -42,8 +56,8 @@ describe('UpdateCompanyUseCase', () => {
 
     const result = await useCase.execute(companyId, updateInput);
 
-    expect(repository.update).toHaveBeenCalledTimes(1);
-    expect(repository.update).toHaveBeenCalledWith(companyId, updateInput);
+    expect(repository.update.mock.calls).toHaveLength(1);
+    expect(repository.update.mock.calls[0]).toEqual([companyId, updateInput]);
     expect(result).toEqual(updatedCompany);
   });
 
@@ -56,14 +70,16 @@ describe('UpdateCompanyUseCase', () => {
     await expect(useCase.execute(companyId, updateInput)).rejects.toThrow(
       'Company not found!',
     );
-    expect(repository.update).toHaveBeenCalledWith(companyId, updateInput);
+    expect(repository.update.mock.calls[0]).toEqual([companyId, updateInput]);
   });
 
   it('should propagate repository exceptions', async () => {
     const error = new Error('database unavailable');
     repository.update.mockRejectedValue(error);
 
-    await expect(useCase.execute(companyId, updateInput)).rejects.toThrow(error);
-    expect(repository.update).toHaveBeenCalledWith(companyId, updateInput);
+    await expect(useCase.execute(companyId, updateInput)).rejects.toThrow(
+      error,
+    );
+    expect(repository.update.mock.calls[0]).toEqual([companyId, updateInput]);
   });
 });

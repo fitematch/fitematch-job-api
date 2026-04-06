@@ -14,6 +14,15 @@ describe('ReadJobUseCase', () => {
   let repository: jest.Mocked<ReadJobRepositoryInterface>;
   let companyRepository: jest.Mocked<ReadCompanyRepositoryInterface>;
 
+  const jobBenefits = {
+    salary: 2500,
+    transportation: true,
+    alimentation: true,
+    health: true,
+    parking: false,
+    bonus: 'PLR trimestral',
+  };
+
   const jobId = 'job-id';
   const jobRecord: JobRecord = {
     id: jobId,
@@ -21,8 +30,9 @@ describe('ReadJobUseCase', () => {
     slug: 'backend-intern',
     title: 'Backend Intern',
     slots: 3,
+    benefits: jobBenefits,
     role: JobRoleEnum.INTERN,
-    status: JobStatusEnum.ENABLED,
+    status: JobStatusEnum.ACTIVE,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
   };
@@ -31,6 +41,20 @@ describe('ReadJobUseCase', () => {
     id: 'company-id',
     slug: 'tecfit',
     name: 'Tecfit',
+    address: {
+      street: 'Rua das Flores',
+      number: '123',
+      neighborhood: 'Centro',
+      city: 'Sao Paulo',
+      state: 'SP',
+      country: 'Brasil',
+    },
+    social: {
+      facebook: 'https://facebook.com/tecfit',
+      instagram: 'https://instagram.com/tecfit',
+      linkedin: 'https://linkedin.com/company/tecfit',
+      twitter: 'https://x.com/tecfit',
+    },
     role: CompanyRoleEnum.MAIN,
     logo: '/images/logo.png',
     cover: '/images/cover.png',
@@ -54,14 +78,18 @@ describe('ReadJobUseCase', () => {
 
     const result = await useCase.execute(jobId);
 
-    expect(repository.findById).toHaveBeenCalledTimes(1);
-    expect(repository.findById).toHaveBeenCalledWith(jobId);
-    expect(companyRepository.findById).toHaveBeenCalledWith(jobRecord.companyId);
+    expect(repository.findById.mock.calls).toHaveLength(1);
+    expect(repository.findById.mock.calls[0]).toEqual([jobId]);
+    expect(companyRepository.findById.mock.calls[0]).toEqual([
+      jobRecord.companyId,
+    ]);
     expect(result).toEqual({
       ...jobRecord,
       company: {
         slug: companyRecord.slug,
         name: companyRecord.name,
+        address: companyRecord.address,
+        social: companyRecord.social,
         role: companyRecord.role,
         logo: companyRecord.logo,
         cover: companyRecord.cover,
@@ -75,7 +103,7 @@ describe('ReadJobUseCase', () => {
 
     await expect(useCase.execute(jobId)).rejects.toThrow(NotFoundException);
     await expect(useCase.execute(jobId)).rejects.toThrow('Job not found!');
-    expect(repository.findById).toHaveBeenCalledWith(jobId);
+    expect(repository.findById.mock.calls[0]).toEqual([jobId]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -83,6 +111,6 @@ describe('ReadJobUseCase', () => {
     repository.findById.mockRejectedValue(error);
 
     await expect(useCase.execute(jobId)).rejects.toThrow(error);
-    expect(repository.findById).toHaveBeenCalledWith(jobId);
+    expect(repository.findById.mock.calls[0]).toEqual([jobId]);
   });
 });

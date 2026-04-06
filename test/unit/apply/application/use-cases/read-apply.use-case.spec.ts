@@ -31,8 +31,8 @@ describe('ReadApplyUseCase', () => {
 
     const result = await useCase.execute(applyId);
 
-    expect(repository.findById).toHaveBeenCalledTimes(1);
-    expect(repository.findById).toHaveBeenCalledWith(applyId);
+    expect(repository.findById.mock.calls).toHaveLength(1);
+    expect(repository.findById.mock.calls[0]).toEqual([applyId]);
     expect(result).toEqual(applyRecord);
   });
 
@@ -41,7 +41,7 @@ describe('ReadApplyUseCase', () => {
 
     await expect(useCase.execute(applyId)).rejects.toThrow(NotFoundException);
     await expect(useCase.execute(applyId)).rejects.toThrow('Apply not found!');
-    expect(repository.findById).toHaveBeenCalledWith(applyId);
+    expect(repository.findById.mock.calls[0]).toEqual([applyId]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -49,6 +49,6 @@ describe('ReadApplyUseCase', () => {
     repository.findById.mockRejectedValue(error);
 
     await expect(useCase.execute(applyId)).rejects.toThrow(error);
-    expect(repository.findById).toHaveBeenCalledWith(applyId);
+    expect(repository.findById.mock.calls[0]).toEqual([applyId]);
   });
 });

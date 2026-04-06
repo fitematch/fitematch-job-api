@@ -32,6 +32,8 @@ export class ListJobUseCase implements ListJobUseCaseInterface {
         {
           slug: company.slug,
           name: company.name,
+          address: company.address,
+          social: company.social ?? {},
           role: company.role,
           logo: company.logo ?? '',
           cover: company.cover ?? '',
@@ -55,6 +57,7 @@ export class ListJobUseCase implements ListJobUseCaseInterface {
         slug: job.slug,
         title: job.title,
         slots: job.slots,
+        benefits: job.benefits,
         isPaidAdvertising: job.isPaidAdvertising,
         role: job.role,
         status: job.status,

@@ -13,6 +13,20 @@ describe('ListCompanyUseCase', () => {
       id: 'company-1',
       slug: 'tecfit',
       name: 'Tecfit',
+      address: {
+        street: 'Rua das Flores',
+        number: '123',
+        neighborhood: 'Centro',
+        city: 'Sao Paulo',
+        state: 'SP',
+        country: 'Brasil',
+      },
+      social: {
+        facebook: 'https://facebook.com/tecfit',
+        instagram: 'https://instagram.com/tecfit',
+        linkedin: 'https://linkedin.com/company/tecfit',
+        twitter: 'https://x.com/tecfit',
+      },
       role: CompanyRoleEnum.MAIN,
       logo: '/images/tecfit.png',
       cover: '/images/tecfit-cover.png',
@@ -24,6 +38,20 @@ describe('ListCompanyUseCase', () => {
       id: 'company-2',
       slug: 'studio-fit',
       name: 'Studio Fit',
+      address: {
+        street: 'Avenida Paulista',
+        number: '500',
+        neighborhood: 'Bela Vista',
+        city: 'Sao Paulo',
+        state: 'SP',
+        country: 'Brasil',
+      },
+      social: {
+        facebook: 'https://facebook.com/studiofit',
+        instagram: 'https://instagram.com/studiofit',
+        linkedin: 'https://linkedin.com/company/studiofit',
+        twitter: 'https://x.com/studiofit',
+      },
       role: CompanyRoleEnum.AFFILIATE,
       logo: '/images/studio-fit.png',
       cover: '/images/studio-fit-cover.png',
@@ -46,8 +74,8 @@ describe('ListCompanyUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(repository.list).toHaveBeenCalledTimes(1);
-    expect(repository.list).toHaveBeenCalledWith();
+    expect(repository.list.mock.calls).toHaveLength(1);
+    expect(repository.list.mock.calls[0]).toEqual([]);
     expect(result).toEqual(companies);
   });
 
@@ -56,7 +84,7 @@ describe('ListCompanyUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(repository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
     expect(result).toEqual([]);
   });
 
@@ -65,6 +93,6 @@ describe('ListCompanyUseCase', () => {
     repository.list.mockRejectedValue(error);
 
     await expect(useCase.execute()).rejects.toThrow(error);
-    expect(repository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
   });
 });

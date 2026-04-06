@@ -15,13 +15,23 @@ describe('CreateJobUseCase', () => {
   let repository: jest.Mocked<CreateJobRepositoryInterface>;
   let companyRepository: jest.Mocked<ReadCompanyRepositoryInterface>;
 
+  const jobBenefits = {
+    salary: 2500,
+    transportation: true,
+    alimentation: true,
+    health: true,
+    parking: false,
+    bonus: 'PLR trimestral',
+  };
+
   const jobInput: JobPayload = {
     companyId: 'company-id',
     slug: 'backend-intern',
     title: 'Backend Intern',
     slots: 3,
+    benefits: jobBenefits,
     role: JobRoleEnum.INTERN,
-    status: JobStatusEnum.ENABLED,
+    status: JobStatusEnum.ACTIVE,
   };
 
   const jobRecord: JobRecord = {
@@ -30,8 +40,9 @@ describe('CreateJobUseCase', () => {
     slug: 'backend-intern',
     title: 'Backend Intern',
     slots: 3,
+    benefits: jobBenefits,
     role: JobRoleEnum.INTERN,
-    status: JobStatusEnum.ENABLED,
+    status: JobStatusEnum.ACTIVE,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
   };
@@ -40,6 +51,20 @@ describe('CreateJobUseCase', () => {
     id: 'company-id',
     slug: 'tecfit',
     name: 'Tecfit',
+    address: {
+      street: 'Rua das Flores',
+      number: '123',
+      neighborhood: 'Centro',
+      city: 'Sao Paulo',
+      state: 'SP',
+      country: 'Brasil',
+    },
+    social: {
+      facebook: 'https://facebook.com/tecfit',
+      instagram: 'https://instagram.com/tecfit',
+      linkedin: 'https://linkedin.com/company/tecfit',
+      twitter: 'https://x.com/tecfit',
+    },
     role: CompanyRoleEnum.MAIN,
     logo: '/images/logo.png',
     cover: '/images/cover.png',
@@ -65,14 +90,18 @@ describe('CreateJobUseCase', () => {
 
     const result = await useCase.execute(jobInput);
 
-    expect(repository.create).toHaveBeenCalledTimes(1);
-    expect(repository.create).toHaveBeenCalledWith(jobInput);
-    expect(companyRepository.findById).toHaveBeenCalledWith(jobRecord.companyId);
+    expect(repository.create.mock.calls).toHaveLength(1);
+    expect(repository.create.mock.calls[0]).toEqual([jobInput]);
+    expect(companyRepository.findById.mock.calls[0]).toEqual([
+      jobRecord.companyId,
+    ]);
     expect(result).toEqual({
       ...jobRecord,
       company: {
         slug: companyRecord.slug,
         name: companyRecord.name,
+        address: companyRecord.address,
+        social: companyRecord.social,
         role: companyRecord.role,
         logo: companyRecord.logo,
         cover: companyRecord.cover,
@@ -85,21 +114,21 @@ describe('CreateJobUseCase', () => {
     const customJobInput: JobPayload = {
       ...jobInput,
       role: JobRoleEnum.FREELANCE,
-      status: JobStatusEnum.DISABLED,
+      status: JobStatusEnum.FREEZE,
       slots: 5,
     };
 
     repository.create.mockResolvedValue({
       ...jobRecord,
       role: JobRoleEnum.FREELANCE,
-      status: JobStatusEnum.DISABLED,
+      status: JobStatusEnum.FREEZE,
       slots: 5,
     });
     companyRepository.findById.mockResolvedValue(companyRecord);
 
     await useCase.execute(customJobInput);
 
-    expect(repository.create).toHaveBeenCalledWith(customJobInput);
+    expect(repository.create.mock.calls[0]).toEqual([customJobInput]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -107,6 +136,6 @@ describe('CreateJobUseCase', () => {
     repository.create.mockRejectedValue(error);
 
     await expect(useCase.execute(jobInput)).rejects.toThrow(error);
-    expect(repository.create).toHaveBeenCalledWith(jobInput);
+    expect(repository.create.mock.calls[0]).toEqual([jobInput]);
   });
 });

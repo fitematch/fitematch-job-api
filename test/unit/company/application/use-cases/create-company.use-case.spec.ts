@@ -13,6 +13,20 @@ describe('CreateCompanyUseCase', () => {
   const companyInput: Company = {
     slug: 'tecfit',
     name: 'Tecfit',
+    address: {
+      street: 'Rua das Flores',
+      number: '123',
+      neighborhood: 'Centro',
+      city: 'Sao Paulo',
+      state: 'SP',
+      country: 'Brasil',
+    },
+    social: {
+      facebook: 'https://facebook.com/tecfit',
+      instagram: 'https://instagram.com/tecfit',
+      linkedin: 'https://linkedin.com/company/tecfit',
+      twitter: 'https://x.com/tecfit',
+    },
     logo: '/images/logo.png',
     cover: '/images/cover.png',
   };
@@ -21,6 +35,8 @@ describe('CreateCompanyUseCase', () => {
     id: 'company-id',
     slug: 'tecfit',
     name: 'Tecfit',
+    address: companyInput.address,
+    social: companyInput.social,
     role: CompanyRoleEnum.MAIN,
     logo: '/images/logo.png',
     cover: '/images/cover.png',
@@ -42,8 +58,8 @@ describe('CreateCompanyUseCase', () => {
 
     const result = await useCase.execute(companyInput);
 
-    expect(repository.create).toHaveBeenCalledTimes(1);
-    expect(repository.create).toHaveBeenCalledWith(companyInput);
+    expect(repository.create.mock.calls).toHaveLength(1);
+    expect(repository.create.mock.calls[0]).toEqual([companyInput]);
     expect(result).toEqual(companyRecord);
   });
 
@@ -62,7 +78,7 @@ describe('CreateCompanyUseCase', () => {
 
     await useCase.execute(inputWithOptionalFields);
 
-    expect(repository.create).toHaveBeenCalledWith(inputWithOptionalFields);
+    expect(repository.create.mock.calls[0]).toEqual([inputWithOptionalFields]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -70,6 +86,6 @@ describe('CreateCompanyUseCase', () => {
     repository.create.mockRejectedValue(error);
 
     await expect(useCase.execute(companyInput)).rejects.toThrow(error);
-    expect(repository.create).toHaveBeenCalledWith(companyInput);
+    expect(repository.create.mock.calls[0]).toEqual([companyInput]);
   });
 });

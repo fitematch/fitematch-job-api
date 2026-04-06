@@ -7,7 +7,7 @@ import {
   UPDATE_JOB_REPOSITORY,
   type UpdateJobRepositoryInterface,
 } from '@src/job/applications/contracts/update-job.repository-interface';
-import type { JobPayload } from '@src/job/applications/contracts/job-payload.interface';
+import type { UpdateJobPayload } from '@src/job/applications/contracts/job-payload.interface';
 import type { UpdateJobUseCaseInterface } from '@src/job/applications/contracts/update-job.use-case-interface';
 import type { Job } from '@src/job/applications/contracts/job.interface';
 
@@ -20,7 +20,7 @@ export class UpdateJobUseCase implements UpdateJobUseCaseInterface {
     private readonly readCompanyRepository: ReadCompanyRepositoryInterface,
   ) {}
 
-  async execute(id: string, data: Partial<JobPayload>): Promise<Job> {
+  async execute(id: string, data: UpdateJobPayload): Promise<Job> {
     const job = await this.updateJobRepository.update(id, data);
 
     if (!job) {
@@ -39,12 +39,15 @@ export class UpdateJobUseCase implements UpdateJobUseCaseInterface {
       slug: job.slug,
       title: job.title,
       slots: job.slots,
+      benefits: job.benefits,
       isPaidAdvertising: job.isPaidAdvertising,
       role: job.role,
       status: job.status,
       company: {
         slug: company.slug,
         name: company.name,
+        address: company.address,
+        social: company.social ?? {},
         role: company.role,
         logo: company.logo ?? '',
         cover: company.cover ?? '',

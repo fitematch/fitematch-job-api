@@ -2,28 +2,49 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { CompanyRoleEnum } from '@src/company/applications/contracts/company-role.enum';
 import { CompanyStatusEnum } from '@src/company/applications/contracts/company-status.enum';
+import {
+  CreateCompanyAddressDto,
+  CreateCompanySocialDto,
+} from './company-details.dto';
+import { Type } from 'class-transformer';
 
 export class CreateCompanyDto {
-  @ApiProperty({ example: 'tecfit', minLength: 2, maxLength: 64 })
+  @ApiProperty({ example: 'company-x', minLength: 2, maxLength: 64 })
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(64)
   slug!: string;
 
-  @ApiProperty({ example: 'Tecfit', minLength: 2, maxLength: 64 })
+  @ApiProperty({ example: 'CompanyX', minLength: 2, maxLength: 64 })
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(64)
   name!: string;
+
+  @ApiProperty({ type: CreateCompanyAddressDto })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateCompanyAddressDto)
+  address!: CreateCompanyAddressDto;
+
+  @ApiProperty({
+    type: CreateCompanySocialDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateCompanySocialDto)
+  social!: CreateCompanySocialDto;
 
   @ApiProperty({
     example: CompanyRoleEnum.AFFILIATE,

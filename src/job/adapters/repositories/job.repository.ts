@@ -2,12 +2,18 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { CreateJobRepositoryInterface } from '@src/job/applications/contracts/create-job.repository-interface';
 import type { DeleteJobRepositoryInterface } from '@src/job/applications/contracts/delete-job.repository-interface';
-import type { JobPayload } from '@src/job/applications/contracts/job-payload.interface';
+import type {
+  JobPayload,
+  UpdateJobPayload,
+} from '@src/job/applications/contracts/job-payload.interface';
 import type { JobRecord } from '@src/job/applications/contracts/job-record.interface';
 import type { ListJobRepositoryInterface } from '@src/job/applications/contracts/list-job.repository-interface';
 import type { ReadJobRepositoryInterface } from '@src/job/applications/contracts/read-job.repository-interface';
 import type { UpdateJobRepositoryInterface } from '@src/job/applications/contracts/update-job.repository-interface';
-import { JobEntity, type JobDocument } from '@src/job/domains/schemas/job.schema';
+import {
+  JobEntity,
+  type JobDocument,
+} from '@src/job/domains/schemas/job.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -47,7 +53,10 @@ export class JobRepository
     return job ? this.toRecord(job) : null;
   }
 
-  async update(id: string, data: Partial<JobPayload>): Promise<JobRecord | null> {
+  async update(
+    id: string,
+    data: UpdateJobPayload,
+  ): Promise<JobRecord | null> {
     try {
       const job = await this.jobModel
         .findByIdAndUpdate(id, data, { new: true, runValidators: true })
@@ -97,6 +106,7 @@ export class JobRepository
       slug: document.slug,
       title: document.title,
       slots: document.slots,
+      benefits: document.benefits,
       isPaidAdvertising: document.isPaidAdvertising,
       role: document.role,
       status: document.status,

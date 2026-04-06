@@ -14,6 +14,24 @@ describe('ListJobUseCase', () => {
   let repository: jest.Mocked<ListJobRepositoryInterface>;
   let companyRepository: jest.Mocked<ListCompanyRepositoryInterface>;
 
+  const firstJobBenefits = {
+    salary: 2500,
+    transportation: true,
+    alimentation: true,
+    health: true,
+    parking: false,
+    bonus: 'PLR trimestral',
+  };
+
+  const secondJobBenefits = {
+    salary: 0,
+    transportation: true,
+    alimentation: false,
+    health: false,
+    parking: true,
+    bonus: 'Bonus por entrega',
+  };
+
   const jobs: JobRecord[] = [
     {
       id: 'job-1',
@@ -21,8 +39,9 @@ describe('ListJobUseCase', () => {
       slug: 'backend-intern',
       title: 'Backend Intern',
       slots: 3,
+      benefits: firstJobBenefits,
       role: JobRoleEnum.INTERN,
-      status: JobStatusEnum.ENABLED,
+      status: JobStatusEnum.ACTIVE,
       createdAt: new Date('2026-01-01T00:00:00.000Z'),
       updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     },
@@ -32,8 +51,9 @@ describe('ListJobUseCase', () => {
       slug: 'designer-contract',
       title: 'Designer Contract',
       slots: 1,
+      benefits: secondJobBenefits,
       role: JobRoleEnum.CONTRACT,
-      status: JobStatusEnum.DISABLED,
+      status: JobStatusEnum.CANCELLED,
       createdAt: new Date('2026-01-02T00:00:00.000Z'),
       updatedAt: new Date('2026-01-02T00:00:00.000Z'),
     },
@@ -44,6 +64,20 @@ describe('ListJobUseCase', () => {
       id: 'company-1',
       slug: 'tecfit',
       name: 'Tecfit',
+      address: {
+        street: 'Rua das Flores',
+        number: '123',
+        neighborhood: 'Centro',
+        city: 'Sao Paulo',
+        state: 'SP',
+        country: 'Brasil',
+      },
+      social: {
+        facebook: 'https://facebook.com/tecfit',
+        instagram: 'https://instagram.com/tecfit',
+        linkedin: 'https://linkedin.com/company/tecfit',
+        twitter: 'https://x.com/tecfit',
+      },
       role: CompanyRoleEnum.MAIN,
       logo: '/images/tecfit.png',
       cover: '/images/tecfit-cover.png',
@@ -53,6 +87,20 @@ describe('ListJobUseCase', () => {
       id: 'company-2',
       slug: 'studio-fit',
       name: 'Studio Fit',
+      address: {
+        street: 'Avenida Paulista',
+        number: '500',
+        neighborhood: 'Bela Vista',
+        city: 'Sao Paulo',
+        state: 'SP',
+        country: 'Brasil',
+      },
+      social: {
+        facebook: 'https://facebook.com/studiofit',
+        instagram: 'https://instagram.com/studiofit',
+        linkedin: 'https://linkedin.com/company/studiofit',
+        twitter: 'https://x.com/studiofit',
+      },
       role: CompanyRoleEnum.AFFILIATE,
       logo: '/images/studio-fit.png',
       cover: '/images/studio-fit-cover.png',
@@ -66,6 +114,8 @@ describe('ListJobUseCase', () => {
       company: {
         slug: 'tecfit',
         name: 'Tecfit',
+        address: companies[0].address,
+        social: companies[0].social,
         role: CompanyRoleEnum.MAIN,
         logo: '/images/tecfit.png',
         cover: '/images/tecfit-cover.png',
@@ -77,6 +127,8 @@ describe('ListJobUseCase', () => {
       company: {
         slug: 'studio-fit',
         name: 'Studio Fit',
+        address: companies[1].address,
+        social: companies[1].social,
         role: CompanyRoleEnum.AFFILIATE,
         logo: '/images/studio-fit.png',
         cover: '/images/studio-fit-cover.png',
@@ -102,9 +154,9 @@ describe('ListJobUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(repository.list).toHaveBeenCalledTimes(1);
-    expect(repository.list).toHaveBeenCalledWith();
-    expect(companyRepository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
+    expect(repository.list.mock.calls[0]).toEqual([]);
+    expect(companyRepository.list.mock.calls).toHaveLength(1);
     expect(result).toEqual(expectedJobs);
   });
 
@@ -114,7 +166,7 @@ describe('ListJobUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(repository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
     expect(result).toEqual([]);
   });
 
@@ -123,6 +175,6 @@ describe('ListJobUseCase', () => {
     repository.list.mockRejectedValue(error);
 
     await expect(useCase.execute()).rejects.toThrow(error);
-    expect(repository.list).toHaveBeenCalledTimes(1);
+    expect(repository.list.mock.calls).toHaveLength(1);
   });
 });

@@ -1,3 +1,4 @@
+import type { JobBenefits } from './job.interface';
 import type { JobRoleEnum } from './job-role.enum';
 import type { JobStatusEnum } from './job-status.enum';
 
@@ -7,6 +8,7 @@ export interface JobRecord {
   slug: string;
   title: string;
   slots: number;
+  benefits: JobBenefits;
   isPaidAdvertising?: boolean;
   role: JobRoleEnum;
   status: JobStatusEnum;

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ReadCompanyResponseDto } from '@src/company/adapters/dto/responses/read-company.response.dto';
 import { JobRoleEnum } from '@src/job/applications/contracts/job-role.enum';
 import { JobStatusEnum } from '@src/job/applications/contracts/job-status.enum';
+import { JobBenefitsResponseDto } from '../job-details.dto';
 
 export class UpdateJobResponseDto {
   @ApiProperty()
@@ -18,6 +19,9 @@ export class UpdateJobResponseDto {
 
   @ApiProperty()
   slots!: number;
+
+  @ApiProperty({ type: JobBenefitsResponseDto })
+  benefits!: JobBenefitsResponseDto;
 
   @ApiProperty({ default: false })
   isPaidAdvertising?: boolean;

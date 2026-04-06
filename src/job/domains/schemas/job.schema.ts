@@ -22,6 +22,26 @@ export class JobEntity {
   @Prop({ required: true, min: 1 })
   slots!: number;
 
+  @Prop({
+    type: {
+      salary: { type: Number, required: false, default: null, min: 0 },
+      transportation: { type: Boolean, required: true },
+      alimentation: { type: Boolean, required: true },
+      health: { type: Boolean, required: true },
+      parking: { type: Boolean, required: true },
+      bonus: { type: String, required: true, trim: true },
+    },
+    required: true,
+  })
+  benefits!: {
+    salary?: number | null;
+    transportation: boolean;
+    alimentation: boolean;
+    health: boolean;
+    parking: boolean;
+    bonus: string;
+  };
+
   @Prop({ type: Boolean, required: false, trim: true, default: false })
   isPaidAdvertising?: boolean;
 

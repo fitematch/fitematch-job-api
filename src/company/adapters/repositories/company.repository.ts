@@ -99,6 +99,8 @@ export class CompanyRepository
       id: document._id.toString(),
       slug: document.slug,
       name: document.name,
+      address: document.address,
+      social: document.social ?? {},
       role: document.role,
       logo: document.logo,
       cover: document.cover,

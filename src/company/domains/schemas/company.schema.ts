@@ -17,6 +17,43 @@ export class CompanyEntity {
   name!: string;
 
   @Prop({
+    type: {
+      street: { type: String, required: true, trim: true },
+      number: { type: String, required: true, trim: true },
+      neighborhood: { type: String, required: true, trim: true },
+      city: { type: String, required: true, trim: true },
+      state: { type: String, required: true, trim: true },
+      country: { type: String, required: true, trim: true },
+    },
+    required: true,
+  })
+  address!: {
+    street: string;
+    number: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    country: string;
+  };
+
+  @Prop({
+    type: {
+      facebook: { type: String, required: false, trim: true },
+      instagram: { type: String, required: false, trim: true },
+      linkedin: { type: String, required: false, trim: true },
+      twitter: { type: String, required: false, trim: true },
+    },
+    required: false,
+    default: {},
+  })
+  social?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    twitter?: string;
+  };
+
+  @Prop({
     required: true,
     enum: CompanyRoleEnum,
     type: String,

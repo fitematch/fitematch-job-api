@@ -36,8 +36,8 @@ describe('UpdateApplyUseCase', () => {
 
     const result = await useCase.execute(applyId, updateInput);
 
-    expect(repository.update).toHaveBeenCalledTimes(1);
-    expect(repository.update).toHaveBeenCalledWith(applyId, updateInput);
+    expect(repository.update.mock.calls).toHaveLength(1);
+    expect(repository.update.mock.calls[0]).toEqual([applyId, updateInput]);
     expect(result).toEqual(updatedApply);
   });
 
@@ -50,7 +50,7 @@ describe('UpdateApplyUseCase', () => {
     await expect(useCase.execute(applyId, updateInput)).rejects.toThrow(
       'Apply not found!',
     );
-    expect(repository.update).toHaveBeenCalledWith(applyId, updateInput);
+    expect(repository.update.mock.calls[0]).toEqual([applyId, updateInput]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -58,6 +58,6 @@ describe('UpdateApplyUseCase', () => {
     repository.update.mockRejectedValue(error);
 
     await expect(useCase.execute(applyId, updateInput)).rejects.toThrow(error);
-    expect(repository.update).toHaveBeenCalledWith(applyId, updateInput);
+    expect(repository.update.mock.calls[0]).toEqual([applyId, updateInput]);
   });
 });

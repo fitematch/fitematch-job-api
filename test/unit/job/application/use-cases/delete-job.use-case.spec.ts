@@ -21,8 +21,8 @@ describe('DeleteJobUseCase', () => {
 
     const result = await useCase.execute(jobId);
 
-    expect(repository.delete).toHaveBeenCalledTimes(1);
-    expect(repository.delete).toHaveBeenCalledWith(jobId);
+    expect(repository.delete.mock.calls).toHaveLength(1);
+    expect(repository.delete.mock.calls[0]).toEqual([jobId]);
     expect(result).toBe(true);
   });
 
@@ -31,7 +31,7 @@ describe('DeleteJobUseCase', () => {
 
     await expect(useCase.execute(jobId)).rejects.toThrow(NotFoundException);
     await expect(useCase.execute(jobId)).rejects.toThrow('Job not found!');
-    expect(repository.delete).toHaveBeenCalledWith(jobId);
+    expect(repository.delete.mock.calls[0]).toEqual([jobId]);
   });
 
   it('should propagate repository exceptions', async () => {
@@ -39,6 +39,6 @@ describe('DeleteJobUseCase', () => {
     repository.delete.mockRejectedValue(error);
 
     await expect(useCase.execute(jobId)).rejects.toThrow(error);
-    expect(repository.delete).toHaveBeenCalledWith(jobId);
+    expect(repository.delete.mock.calls[0]).toEqual([jobId]);
   });
 });
