@@ -1,7 +1,6 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ListJobResponseDto } from '@src/job/adapters/dto/responses/list-job.response.dto';
-import type { Job } from '@src/job/applications/contracts/job.interface';
 import {
   LIST_JOB_USE_CASE,
   type ListJobUseCaseInterface,
@@ -25,7 +24,7 @@ export class ListJobController {
     isArray: true,
   })
   @Get()
-  async list(): Promise<Job[]> {
+  async list(): Promise<ListJobResponseDto[]> {
     return this.listJobUseCase.execute();
   }
 }

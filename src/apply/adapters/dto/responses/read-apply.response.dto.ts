@@ -11,6 +11,9 @@ export class ReadApplyResponseDto {
   @ApiProperty()
   jobId!: string;
 
+  @ApiProperty()
+  userId!: string;
+
   @ApiProperty({ enum: ApplyStatusEnum })
   status!: ApplyStatusEnum;
 

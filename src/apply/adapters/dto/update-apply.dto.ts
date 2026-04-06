@@ -13,6 +13,11 @@ export class UpdateApplyDto {
   @IsString()
   jobId?: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  userId?: string;
+
   @ApiProperty({
     example: ApplyStatusEnum.ACTIVE,
     enum: ApplyStatusEnum,

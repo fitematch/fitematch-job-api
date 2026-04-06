@@ -7,8 +7,9 @@ import {
   READ_JOB_REPOSITORY,
   type ReadJobRepositoryInterface,
 } from '@src/job/applications/contracts/read-job.repository-interface';
-import type { Job } from '@src/job/applications/contracts/job.interface';
 import type { ReadJobUseCaseInterface } from '@src/job/applications/contracts/read-job.use-case-interface';
+import type { ReadJobResponseDto } from '@src/job/adapters/dto/responses/read-job.response.dto';
+import MasksUtils from '@src/shared/applications/utils/masks.utils';
 
 @Injectable()
 export class ReadJobUseCase implements ReadJobUseCaseInterface {
@@ -19,7 +20,7 @@ export class ReadJobUseCase implements ReadJobUseCaseInterface {
     private readonly readCompanyRepository: ReadCompanyRepositoryInterface,
   ) {}
 
-  async execute(id: string): Promise<Job> {
+  async execute(id: string): Promise<ReadJobResponseDto> {
     const job = await this.readJobRepository.findById(id);
 
     if (!job) {
@@ -38,11 +39,18 @@ export class ReadJobUseCase implements ReadJobUseCaseInterface {
       slug: job.slug,
       title: job.title,
       slots: job.slots,
-      benefits: job.benefits,
+      benefits: {
+        ...job.benefits,
+        salary:
+          job.benefits.salary === null || job.benefits.salary === undefined
+            ? null
+            : MasksUtils.applyBrazilianSalaryMask(String(job.benefits.salary)),
+      },
       isPaidAdvertising: job.isPaidAdvertising,
       role: job.role,
       status: job.status,
       company: {
+        id: company.id,
         slug: company.slug,
         name: company.name,
         address: company.address,
@@ -51,6 +59,8 @@ export class ReadJobUseCase implements ReadJobUseCaseInterface {
         logo: company.logo ?? '',
         cover: company.cover ?? '',
         status: company.status,
+        createdAt: company.createdAt,
+        updatedAt: company.updatedAt,
       },
       createdAt: job.createdAt,
       updatedAt: job.updatedAt,

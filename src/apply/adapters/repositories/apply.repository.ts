@@ -64,6 +64,7 @@ export class ApplyRepository
       id: document._id.toString(),
       companyId: document.companyId,
       jobId: document.jobId,
+      userId: document.userId,
       status: document.status,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,

@@ -7,7 +7,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ReadJobResponseDto } from '@src/job/adapters/dto/responses/read-job.response.dto';
-import type { Job } from '@src/job/applications/contracts/job.interface';
 import {
   READ_JOB_USE_CASE,
   type ReadJobUseCaseInterface,
@@ -34,7 +33,7 @@ export class ReadJobController {
     description: 'Job not found!',
   })
   @Get(':id')
-  async getById(@Param('id') id: string): Promise<Job> {
+  async getById(@Param('id') id: string): Promise<ReadJobResponseDto> {
     return this.readJobUseCase.execute(id);
   }
 }

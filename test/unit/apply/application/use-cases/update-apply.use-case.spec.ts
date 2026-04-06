@@ -18,6 +18,7 @@ describe('UpdateApplyUseCase', () => {
     id: applyId,
     companyId: 'company-id',
     jobId: 'job-id',
+    userId: 'user-id',
     status: ApplyStatusEnum.FREEZE,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-02T00:00:00.000Z'),

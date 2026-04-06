@@ -76,4 +76,22 @@ export class UpdateJobBenefitsDto {
   bonus?: string;
 }
 
-export class JobBenefitsResponseDto extends JobBenefitsDto {}
+export class JobBenefitsResponseDto {
+  @ApiPropertyOptional({ example: 'R$ 2.500,00', nullable: true })
+  salary?: string | null;
+
+  @ApiProperty({ example: true })
+  transportation!: boolean;
+
+  @ApiProperty({ example: true })
+  alimentation!: boolean;
+
+  @ApiProperty({ example: true })
+  health!: boolean;
+
+  @ApiProperty({ example: false })
+  parking!: boolean;
+
+  @ApiProperty({ example: 'PLR e bonus trimestral', maxLength: 255 })
+  bonus!: string;
+}

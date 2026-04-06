@@ -13,6 +13,7 @@ import {
   CREATE_APPLY_USE_CASE,
   type CreateApplyUseCaseInterface,
 } from '@src/apply/applications/contracts/create-apply.use-case-interface';
+import { ApplyStatusEnum } from '@src/apply/applications/contracts/apply-status.enum';
 
 @ApiTags('Apply')
 @Controller('apply')
@@ -23,12 +24,12 @@ export class CreateApplyController {
   ) {}
 
   @ApiOperation({
-    summary: 'Create apply',
-    description: 'Creates a new apply.',
+    summary: 'Create job application.',
+    description: 'Creates a new job application.',
   })
   @ApiBody({ type: CreateApplyDto })
   @ApiCreatedResponse({
-    description: 'Apply created successfully.',
+    description: 'Job application created successfully.',
     type: CreateApplyResponseDto,
   })
   @ApiBadRequestResponse({
@@ -36,6 +37,9 @@ export class CreateApplyController {
   })
   @Post()
   async create(@Body() data: CreateApplyDto): Promise<ApplyRecord> {
-    return this.createApplyUseCase.execute(data);
+    return this.createApplyUseCase.execute({
+      ...data,
+      status: data.status ?? ApplyStatusEnum.ACTIVE,
+    });
   }
 }

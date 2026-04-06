@@ -15,10 +15,14 @@ export class ApplyEntity {
   @Prop({ required: true, trim: true })
   jobId!: string;
 
+  @Prop({ required: true, trim: true })
+  userId!: string;
+
   @Prop({
     required: true,
     enum: ApplyStatusEnum,
     type: String,
+    default: ApplyStatusEnum.ACTIVE,
   })
   status!: ApplyStatusEnum;
 

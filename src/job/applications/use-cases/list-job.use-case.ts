@@ -3,13 +3,14 @@ import {
   LIST_COMPANY_REPOSITORY,
   type ListCompanyRepositoryInterface,
 } from '@src/company/applications/contracts/list-company.repository-interface';
-import type { Company } from '@src/company/applications/contracts/company.interface';
+import type { ReadCompanyResponseDto } from '@src/company/adapters/dto/responses/read-company.response.dto';
 import {
   LIST_JOB_REPOSITORY,
   type ListJobRepositoryInterface,
 } from '@src/job/applications/contracts/list-job.repository-interface';
-import type { Job } from '@src/job/applications/contracts/job.interface';
 import type { ListJobUseCaseInterface } from '@src/job/applications/contracts/list-job.use-case-interface';
+import type { ListJobResponseDto } from '@src/job/adapters/dto/responses/list-job.response.dto';
+import MasksUtils from '@src/shared/applications/utils/masks.utils';
 
 @Injectable()
 export class ListJobUseCase implements ListJobUseCaseInterface {
@@ -20,16 +21,17 @@ export class ListJobUseCase implements ListJobUseCaseInterface {
     private readonly listCompanyRepository: ListCompanyRepositoryInterface,
   ) {}
 
-  async execute(): Promise<Job[]> {
+  async execute(): Promise<ListJobResponseDto[]> {
     const [jobs, companies] = await Promise.all([
       this.listJobRepository.list(),
       this.listCompanyRepository.list(),
     ]);
 
-    const companiesById = new Map<string, Company>(
+    const companiesById = new Map<string, ReadCompanyResponseDto>(
       companies.map((company) => [
         company.id,
         {
+          id: company.id,
           slug: company.slug,
           name: company.name,
           address: company.address,
@@ -38,6 +40,8 @@ export class ListJobUseCase implements ListJobUseCaseInterface {
           logo: company.logo ?? '',
           cover: company.cover ?? '',
           status: company.status,
+          createdAt: company.createdAt,
+          updatedAt: company.updatedAt,
         },
       ]),
     );
@@ -57,7 +61,15 @@ export class ListJobUseCase implements ListJobUseCaseInterface {
         slug: job.slug,
         title: job.title,
         slots: job.slots,
-        benefits: job.benefits,
+        benefits: {
+          ...job.benefits,
+          salary:
+            job.benefits.salary === null || job.benefits.salary === undefined
+              ? null
+              : MasksUtils.applyBrazilianSalaryMask(
+                  String(job.benefits.salary),
+                ),
+        },
         isPaidAdvertising: job.isPaidAdvertising,
         role: job.role,
         status: job.status,
