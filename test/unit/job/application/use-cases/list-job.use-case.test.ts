@@ -16,9 +16,15 @@ import type MetadataUtils from '@src/shared/applications/utils/metadata.utils';
 
 describe('ListJobUseCase', () => {
   let useCase: ListJobUseCase;
-  let repository: jest.Mocked<ListJobRepositoryInterface>;
-  let companyRepository: jest.Mocked<ListCompanyRepositoryInterface>;
-  let metadataUtils: jest.Mocked<MetadataUtils>;
+  let repository: {
+    list: jest.MockedFunction<ListJobRepositoryInterface['list']>;
+  };
+  let companyRepository: {
+    list: jest.MockedFunction<ListCompanyRepositoryInterface['list']>;
+  };
+  let metadataUtils: {
+    getDadosPaginacao: jest.MockedFunction<MetadataUtils['getDadosPaginacao']>;
+  };
 
   const filters: DataListJobsUseCaseInterface = {
     route: '/jobs',
@@ -66,7 +72,7 @@ describe('ListJobUseCase', () => {
       slots: 1,
       cover: '/images/jobs/designer-contract.png',
       benefits: secondJobBenefits,
-      role: JobRoleEnum.CONTRACT,
+      role: JobRoleEnum.CONTRACT_PERSON,
       status: JobStatusEnum.CANCELLED,
       createdAt: new Date('2026-01-02T00:00:00.000Z'),
       updatedAt: new Date('2026-01-02T00:00:00.000Z'),
@@ -206,7 +212,7 @@ describe('ListJobUseCase', () => {
     };
     metadataUtils = {
       getDadosPaginacao: jest.fn().mockReturnValue(paginationMetadata),
-    } as unknown as jest.Mocked<MetadataUtils>;
+    };
 
     useCase = new ListJobUseCase(repository, companyRepository, metadataUtils);
   });
@@ -218,15 +224,11 @@ describe('ListJobUseCase', () => {
 
       const result = await useCase.execute(filters);
 
-      expect(repository.list).toHaveBeenCalledWith(filters);
-      expect(companyRepository.list).toHaveBeenCalledWith();
-      expect(metadataUtils.getDadosPaginacao).toHaveBeenCalledWith(
-        2,
-        2,
-        10,
-        1,
-        '/jobs',
-      );
+      expect(repository.list.mock.calls).toEqual([[filters]]);
+      expect(companyRepository.list.mock.calls).toEqual([[]]);
+      expect(metadataUtils.getDadosPaginacao.mock.calls).toEqual([
+        [2, 2, 10, 1, '/jobs'],
+      ]);
       expect(result).toEqual(expectedResult);
     });
 
@@ -248,7 +250,7 @@ describe('ListJobUseCase', () => {
       companyRepository.list.mockResolvedValue([
         {
           ...companies[0],
-          social: undefined,
+          social: {} as CompanyRecord['social'],
           logo: undefined,
           cover: undefined,
         },
@@ -295,8 +297,8 @@ describe('ListJobUseCase', () => {
 
       const result = await useCase.execute(filters);
 
-      expect(repository.list).toHaveBeenCalledWith(filters);
-      expect(metadataUtils.getDadosPaginacao).not.toHaveBeenCalled();
+      expect(repository.list.mock.calls).toEqual([[filters]]);
+      expect(metadataUtils.getDadosPaginacao.mock.calls).toEqual([]);
       expect(result).toEqual({
         data: [],
         metadata: {
@@ -363,7 +365,7 @@ describe('ListJobUseCase', () => {
       await expect(useCase.execute(filters)).rejects.toThrow(
         `Company not found for job ${jobs[0].id} and companyId ${jobs[0].companyId}`,
       );
-      expect(metadataUtils.getDadosPaginacao).not.toHaveBeenCalled();
+      expect(metadataUtils.getDadosPaginacao.mock.calls).toEqual([]);
     });
 
     it('should propagate repository exceptions', async () => {
@@ -371,7 +373,7 @@ describe('ListJobUseCase', () => {
       repository.list.mockRejectedValue(error);
 
       await expect(useCase.execute(filters)).rejects.toThrow(error);
-      expect(repository.list).toHaveBeenCalledWith(filters);
+      expect(repository.list.mock.calls).toEqual([[filters]]);
     });
   });
 });

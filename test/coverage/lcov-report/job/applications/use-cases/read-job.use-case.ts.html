@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>13/14</span>
             </div>
         
             
@@ -156,15 +156,17 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -176,40 +178,38 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
-  READ_COMPANY_REPOSITORY,
+  READ_COMPANY_REPOSITORY_INTERFACE,
   type ReadCompanyRepositoryInterface,
 } from '@src/company/applications/contracts/read-company.repository-interface';
 import {
-  READ_JOB_REPOSITORY,
+  READ_JOB_REPOSITORY_INTERFACE,
   type ReadJobRepositoryInterface,
 } from '@src/job/applications/contracts/read-job.repository-interface';
 import type { ReadJobUseCaseInterface } from '@src/job/applications/contracts/read-job.use-case-interface';
@@ -219,9 +219,9 @@ import MasksUtils from '@src/shared/applications/utils/masks.utils';
 @Injectable()
 export class ReadJobUseCase implements ReadJobUseCaseInterface {
   constructor(
-    @Inject(READ_JOB_REPOSITORY)
+    @Inject(READ_JOB_REPOSITORY_INTERFACE)
     private readonly readJobRepository: ReadJobRepositoryInterface,
-    @Inject(READ_COMPANY_REPOSITORY)
+    @Inject(READ_COMPANY_REPOSITORY_INTERFACE)
     private readonly readCompanyRepository: ReadCompanyRepositoryInterface,
   ) {}
 &nbsp;
@@ -260,7 +260,7 @@ export class ReadJobUseCase implements ReadJobUseCaseInterface {
         slug: company.slug,
         name: company.name,
         address: company.address,
-        social: company.social ?? {},
+        social: company.social<span class="branch-0 cbranch-no" title="branch not covered" > ?? {},</span>
         role: company.role,
         logo: company.logo ?? '',
         cover: company.cover ?? '',
@@ -280,7 +280,7 @@ export class ReadJobUseCase implements ReadJobUseCaseInterface {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-15T04:58:13.721Z
+                at 2026-04-15T06:44:33.188Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

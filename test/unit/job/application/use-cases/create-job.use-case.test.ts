@@ -12,8 +12,12 @@ import { CreateJobUseCase } from '@src/job/applications/use-cases/create-job.use
 
 describe('CreateJobUseCase', () => {
   let useCase: CreateJobUseCase;
-  let repository: jest.Mocked<CreateJobRepositoryInterface>;
-  let companyRepository: jest.Mocked<ReadCompanyRepositoryInterface>;
+  let repository: {
+    create: jest.MockedFunction<CreateJobRepositoryInterface['create']>;
+  };
+  let companyRepository: {
+    findById: jest.MockedFunction<ReadCompanyRepositoryInterface['findById']>;
+  };
 
   const companyId = 'company-id';
   const jobInput: JobPayload = {
@@ -86,8 +90,8 @@ describe('CreateJobUseCase', () => {
 
       const result = await useCase.execute(jobInput);
 
-      expect(repository.create).toHaveBeenCalledWith(jobInput);
-      expect(companyRepository.findById).toHaveBeenCalledWith(companyId);
+      expect(repository.create.mock.calls).toEqual([[jobInput]]);
+      expect(companyRepository.findById.mock.calls).toEqual([[companyId]]);
       expect(result).toEqual({
         ...jobRecord,
         company: {
@@ -110,7 +114,7 @@ describe('CreateJobUseCase', () => {
       });
       companyRepository.findById.mockResolvedValue({
         ...companyRecord,
-        social: undefined,
+        social: {} as CompanyRecord['social'],
         logo: undefined,
         cover: undefined,
       });
@@ -138,7 +142,7 @@ describe('CreateJobUseCase', () => {
 
       await useCase.execute(customJobInput);
 
-      expect(repository.create).toHaveBeenCalledWith(customJobInput);
+      expect(repository.create.mock.calls).toEqual([[customJobInput]]);
     });
 
     it('should throw NotFoundException when the company does not exist', async () => {
@@ -146,12 +150,9 @@ describe('CreateJobUseCase', () => {
       companyRepository.findById.mockResolvedValue(null);
 
       await expect(useCase.execute(jobInput)).rejects.toThrow(
-        NotFoundException,
+        new NotFoundException('Company not found!'),
       );
-      await expect(useCase.execute(jobInput)).rejects.toThrow(
-        'Company not found!',
-      );
-      expect(companyRepository.findById).toHaveBeenCalledWith(companyId);
+      expect(companyRepository.findById.mock.calls).toEqual([[companyId]]);
     });
 
     it('should propagate repository exceptions', async () => {
@@ -159,7 +160,7 @@ describe('CreateJobUseCase', () => {
       repository.create.mockRejectedValue(error);
 
       await expect(useCase.execute(jobInput)).rejects.toThrow(error);
-      expect(repository.create).toHaveBeenCalledWith(jobInput);
+      expect(repository.create.mock.calls).toEqual([[jobInput]]);
     });
   });
 });

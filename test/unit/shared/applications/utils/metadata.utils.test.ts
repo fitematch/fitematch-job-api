@@ -9,9 +9,7 @@ describe('MetadataUtils', () => {
 
   describe('getDadosPaginacao', () => {
     it('should build pagination metadata when previous and next pages exist', () => {
-      expect(
-        metadataUtils.getDadosPaginacao(50, 10, 10, 3, '/jobs'),
-      ).toEqual({
+      expect(metadataUtils.getDadosPaginacao(50, 10, 10, 3, '/jobs')).toEqual({
         totalItems: 50,
         itemCount: 10,
         itemsPerPage: 10,
@@ -29,9 +27,7 @@ describe('MetadataUtils', () => {
     });
 
     it('should build pagination metadata for the first and last page boundaries', () => {
-      expect(
-        metadataUtils.getDadosPaginacao(10, 10, 10, 1, '/jobs'),
-      ).toEqual({
+      expect(metadataUtils.getDadosPaginacao(10, 10, 10, 1, '/jobs')).toEqual({
         totalItems: 10,
         itemCount: 10,
         itemsPerPage: 10,

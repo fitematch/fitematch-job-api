@@ -12,8 +12,12 @@ import { UpdateJobUseCase } from '@src/job/applications/use-cases/update-job.use
 
 describe('UpdateJobUseCase', () => {
   let useCase: UpdateJobUseCase;
-  let repository: jest.Mocked<UpdateJobRepositoryInterface>;
-  let companyRepository: jest.Mocked<ReadCompanyRepositoryInterface>;
+  let repository: {
+    update: jest.MockedFunction<UpdateJobRepositoryInterface['update']>;
+  };
+  let companyRepository: {
+    findById: jest.MockedFunction<ReadCompanyRepositoryInterface['findById']>;
+  };
 
   const jobId = 'job-id';
   const companyId = 'company-id';
@@ -90,8 +94,8 @@ describe('UpdateJobUseCase', () => {
 
       const result = await useCase.execute(jobId, updateInput);
 
-      expect(repository.update).toHaveBeenCalledWith(jobId, updateInput);
-      expect(companyRepository.findById).toHaveBeenCalledWith(companyId);
+      expect(repository.update.mock.calls).toEqual([[jobId, updateInput]]);
+      expect(companyRepository.findById.mock.calls).toEqual([[companyId]]);
       expect(result).toEqual({
         ...updatedJob,
         company: {
@@ -111,7 +115,7 @@ describe('UpdateJobUseCase', () => {
       repository.update.mockResolvedValue(updatedJob);
       companyRepository.findById.mockResolvedValue({
         ...companyRecord,
-        social: undefined,
+        social: {} as CompanyRecord['social'],
         logo: undefined,
         cover: undefined,
       });
@@ -127,13 +131,10 @@ describe('UpdateJobUseCase', () => {
       repository.update.mockResolvedValue(null);
 
       await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(
-        NotFoundException,
+        new NotFoundException('Job not found!'),
       );
-      await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(
-        'Job not found!',
-      );
-      expect(repository.update).toHaveBeenCalledWith(jobId, updateInput);
-      expect(companyRepository.findById).not.toHaveBeenCalled();
+      expect(repository.update.mock.calls).toEqual([[jobId, updateInput]]);
+      expect(companyRepository.findById.mock.calls).toEqual([]);
     });
 
     it('should throw NotFoundException when the company does not exist', async () => {
@@ -141,12 +142,9 @@ describe('UpdateJobUseCase', () => {
       companyRepository.findById.mockResolvedValue(null);
 
       await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(
-        NotFoundException,
+        new NotFoundException('Company not found!'),
       );
-      await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(
-        'Company not found!',
-      );
-      expect(companyRepository.findById).toHaveBeenCalledWith(companyId);
+      expect(companyRepository.findById.mock.calls).toEqual([[companyId]]);
     });
 
     it('should propagate repository exceptions', async () => {
@@ -154,7 +152,7 @@ describe('UpdateJobUseCase', () => {
       repository.update.mockRejectedValue(error);
 
       await expect(useCase.execute(jobId, updateInput)).rejects.toThrow(error);
-      expect(repository.update).toHaveBeenCalledWith(jobId, updateInput);
+      expect(repository.update.mock.calls).toEqual([[jobId, updateInput]]);
     });
   });
 });

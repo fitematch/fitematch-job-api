@@ -11,7 +11,9 @@ describe('MasksUtils', () => {
     });
 
     it('should format integer salary values', () => {
-      expect(MasksUtils.applyBrazilianSalaryMask('2500')).toBe('R$\u00A02.500,00');
+      expect(MasksUtils.applyBrazilianSalaryMask('2500')).toBe(
+        'R$\u00A02.500,00',
+      );
     });
 
     it('should normalize decimal values using comma separators', () => {

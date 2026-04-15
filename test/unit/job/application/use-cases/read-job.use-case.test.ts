@@ -11,8 +11,14 @@ import { ReadJobUseCase } from '@src/job/applications/use-cases/read-job.use-cas
 
 describe('ReadJobUseCase', () => {
   let useCase: ReadJobUseCase;
-  let repository: jest.Mocked<ReadJobRepositoryInterface>;
-  let companyRepository: jest.Mocked<ReadCompanyRepositoryInterface>;
+  let repository: ReadJobRepositoryInterface;
+  let companyRepository: ReadCompanyRepositoryInterface;
+  let findJobByIdSpy: jest.SpiedFunction<
+    ReadJobRepositoryInterface['findById']
+  >;
+  let findCompanyByIdSpy: jest.SpiedFunction<
+    ReadCompanyRepositoryInterface['findById']
+  >;
 
   const jobId = 'job-id';
   const companyId = 'company-id';
@@ -67,24 +73,26 @@ describe('ReadJobUseCase', () => {
 
   beforeEach(() => {
     repository = {
-      findById: jest.fn(),
+      findById: () => Promise.resolve(null),
     };
     companyRepository = {
-      findById: jest.fn(),
+      findById: () => Promise.resolve(null),
     };
+    findJobByIdSpy = jest.spyOn(repository, 'findById');
+    findCompanyByIdSpy = jest.spyOn(companyRepository, 'findById');
 
     useCase = new ReadJobUseCase(repository, companyRepository);
   });
 
   describe('execute', () => {
     it('should return a job with company details and formatted salary', async () => {
-      repository.findById.mockResolvedValue(jobRecord);
-      companyRepository.findById.mockResolvedValue(companyRecord);
+      findJobByIdSpy.mockResolvedValue(jobRecord);
+      findCompanyByIdSpy.mockResolvedValue(companyRecord);
 
       const result = await useCase.execute(jobId);
 
-      expect(repository.findById).toHaveBeenCalledWith(jobId);
-      expect(companyRepository.findById).toHaveBeenCalledWith(companyId);
+      expect(findJobByIdSpy.mock.calls).toEqual([[jobId]]);
+      expect(findCompanyByIdSpy.mock.calls).toEqual([[companyId]]);
       expect(result).toEqual({
         ...jobRecord,
         benefits: {
@@ -108,7 +116,7 @@ describe('ReadJobUseCase', () => {
     });
 
     it('should normalize nullable company fields and salary when absent', async () => {
-      repository.findById.mockResolvedValue({
+      findJobByIdSpy.mockResolvedValue({
         ...jobRecord,
         isPaidAdvertising: undefined,
         cover: '',
@@ -117,9 +125,9 @@ describe('ReadJobUseCase', () => {
           salary: null,
         },
       });
-      companyRepository.findById.mockResolvedValue({
+      findCompanyByIdSpy.mockResolvedValue({
         ...companyRecord,
-        social: undefined,
+        social: {} as CompanyRecord['social'],
         logo: undefined,
         cover: undefined,
       });
@@ -133,32 +141,32 @@ describe('ReadJobUseCase', () => {
     });
 
     it('should throw NotFoundException when the job does not exist', async () => {
-      repository.findById.mockResolvedValue(null);
+      findJobByIdSpy.mockResolvedValue(null);
 
-      await expect(useCase.execute(jobId)).rejects.toThrow(NotFoundException);
-      await expect(useCase.execute(jobId)).rejects.toThrow('Job not found!');
-      expect(repository.findById).toHaveBeenCalledWith(jobId);
-      expect(companyRepository.findById).not.toHaveBeenCalled();
+      await expect(useCase.execute(jobId)).rejects.toThrow(
+        new NotFoundException('Job not found!'),
+      );
+      expect(findJobByIdSpy.mock.calls).toEqual([[jobId]]);
+      expect(findCompanyByIdSpy.mock.calls).toEqual([]);
     });
 
     it('should throw NotFoundException when the company does not exist', async () => {
-      repository.findById.mockResolvedValue(jobRecord);
-      companyRepository.findById.mockResolvedValue(null);
+      findJobByIdSpy.mockResolvedValue(jobRecord);
+      findCompanyByIdSpy.mockResolvedValue(null);
 
-      await expect(useCase.execute(jobId)).rejects.toThrow(NotFoundException);
       await expect(useCase.execute(jobId)).rejects.toThrow(
-        'Company not found!',
+        new NotFoundException('Company not found!'),
       );
-      expect(repository.findById).toHaveBeenCalledWith(jobId);
-      expect(companyRepository.findById).toHaveBeenCalledWith(companyId);
+      expect(findJobByIdSpy.mock.calls).toEqual([[jobId]]);
+      expect(findCompanyByIdSpy.mock.calls).toEqual([[companyId]]);
     });
 
     it('should propagate repository exceptions', async () => {
       const error = new Error('database unavailable');
-      repository.findById.mockRejectedValue(error);
+      findJobByIdSpy.mockRejectedValue(error);
 
       await expect(useCase.execute(jobId)).rejects.toThrow(error);
-      expect(repository.findById).toHaveBeenCalledWith(jobId);
+      expect(findJobByIdSpy.mock.calls).toEqual([[jobId]]);
     });
   });
 });
