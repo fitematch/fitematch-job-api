@@ -1,8 +1,8 @@
 import { CreateCompanyUseCase } from '@src/company/applications/use-cases/create-company.use-case';
 import type { CreateCompanyRepositoryInterface } from '@src/company/applications/contracts/create-company.repository-interface';
-import { CompanyRoleEnum } from '@src/company/domain/enums/company-role.enum';
-import { CompanyStatusEnum } from '@src/company/domain/enums/company-status.enum';
-import type { Company } from '@src/company/domain/entities/company.entity';
+import { CompanyRoleEnum } from '@src/company/domains/enums/company-role.enum';
+import { CompanyStatusEnum } from '@src/company/domains/enums/company-status.enum';
+import type { Company } from '@src/company/domains/entities/company.entity';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 import { ConflictApplicationError } from '@src/shared/application/errors/conflict.application-error';
 

@@ -1,7 +1,7 @@
-import type { CompanyRoleEnum } from '@src/company/domain/enums/company-role.enum';
-import type { CompanyStatusEnum } from '@src/company/domain/enums/company-status.enum';
-import { CompanyRoleEnum as CompanyRoleDefault } from '@src/company/domain/enums/company-role.enum';
-import { CompanyStatusEnum as CompanyStatusDefault } from '@src/company/domain/enums/company-status.enum';
+import type { CompanyRoleEnum } from '@src/company/domains/enums/company-role.enum';
+import type { CompanyStatusEnum } from '@src/company/domains/enums/company-status.enum';
+import { CompanyRoleEnum as CompanyRoleDefault } from '@src/company/domains/enums/company-role.enum';
+import { CompanyStatusEnum as CompanyStatusDefault } from '@src/company/domains/enums/company-status.enum';
 import { DomainValidationError } from '@src/shared/domain/errors/domain-validation.error';
 
 export type CompanyAddress = {

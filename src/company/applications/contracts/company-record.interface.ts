@@ -1,9 +1,9 @@
 import type {
   CompanyAddress,
   CompanySocial,
-} from '@src/company/domain/entities/company.entity';
-import type { CompanyRoleEnum } from '@src/company/domain/enums/company-role.enum';
-import type { CompanyStatusEnum } from '@src/company/domain/enums/company-status.enum';
+} from '@src/company/domains/entities/company.entity';
+import type { CompanyRoleEnum } from '@src/company/domains/enums/company-role.enum';
+import type { CompanyStatusEnum } from '@src/company/domains/enums/company-status.enum';
 
 export interface CompanyRecord {
   id: string;

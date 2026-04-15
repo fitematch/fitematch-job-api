@@ -1,7 +1,7 @@
 import { ReadCompanyUseCase } from '@src/company/applications/use-cases/read-company.use-case';
 import type { ReadCompanyRepositoryInterface } from '@src/company/applications/contracts/read-company.repository-interface';
-import { CompanyRoleEnum } from '@src/company/domain/enums/company-role.enum';
-import { CompanyStatusEnum } from '@src/company/domain/enums/company-status.enum';
+import { CompanyRoleEnum } from '@src/company/domains/enums/company-role.enum';
+import { CompanyStatusEnum } from '@src/company/domains/enums/company-status.enum';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 import { NotFoundApplicationError } from '@src/shared/application/errors/not-found.application-error';
 

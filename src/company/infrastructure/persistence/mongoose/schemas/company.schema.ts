@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { CompanyRoleEnum } from '@src/company/domain/enums/company-role.enum';
-import { CompanyStatusEnum } from '@src/company/domain/enums/company-status.enum';
+import { CompanyRoleEnum } from '@src/company/domains/enums/company-role.enum';
+import { CompanyStatusEnum } from '@src/company/domains/enums/company-status.enum';
 
 export type CompanyDocument = HydratedDocument<CompanyEntity>;
 

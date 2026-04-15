@@ -1,4 +1,4 @@
-import type { Company } from '@src/company/domain/entities/company.entity';
+import type { Company } from '@src/company/domains/entities/company.entity';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 
 export const CREATE_COMPANY_USE_CASE_INTERFACE =

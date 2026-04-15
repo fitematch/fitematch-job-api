@@ -6,7 +6,7 @@ import type { ListCompanyRepositoryInterface } from '@src/company/applications/c
 import type { ReadCompanyRepositoryInterface } from '@src/company/applications/contracts/read-company.repository-interface';
 import type { UpdateCompanyRepositoryInterface } from '@src/company/applications/contracts/update-company.repository-interface';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
-import type { Company } from '@src/company/domain/entities/company.entity';
+import type { Company } from '@src/company/domains/entities/company.entity';
 import {
   CompanyEntity,
   type CompanyDocument,

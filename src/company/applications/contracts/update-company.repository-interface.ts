@@ -1,4 +1,4 @@
-import type { Company } from '@src/company/domain/entities/company.entity';
+import type { Company } from '@src/company/domains/entities/company.entity';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 
 export const UPDATE_COMPANY_REPOSITORY_INTERFACE =

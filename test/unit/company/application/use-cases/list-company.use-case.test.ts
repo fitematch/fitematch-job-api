@@ -1,7 +1,7 @@
 import { ListCompanyUseCase } from '@src/company/applications/use-cases/list-company.use-case';
 import type { ListCompanyRepositoryInterface } from '@src/company/applications/contracts/list-company.repository-interface';
-import { CompanyRoleEnum } from '@src/company/domain/enums/company-role.enum';
-import { CompanyStatusEnum } from '@src/company/domain/enums/company-status.enum';
+import { CompanyRoleEnum } from '@src/company/domains/enums/company-role.enum';
+import { CompanyStatusEnum } from '@src/company/domains/enums/company-status.enum';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 
 describe('ListCompanyUseCase', () => {

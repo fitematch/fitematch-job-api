@@ -1,6 +1,6 @@
-import type { JobRoleEnum } from '@src/job/domain/enums/job-role.enum';
 import type { JobStatusEnum } from '@src/job/domain/enums/job-status.enum';
 import { DomainValidationError } from '@src/shared/domain/errors/domain-validation.error';
+import { JobRoleEnum } from '../enums/job-role.enum';
 
 export interface JobBenefits {
   salary?: number | null;

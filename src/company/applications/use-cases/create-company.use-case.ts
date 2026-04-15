@@ -3,7 +3,7 @@ import type { CreateCompanyUseCaseInterface } from '@src/company/applications/co
 import {
   CompanyEntity,
   type Company,
-} from '@src/company/domain/entities/company.entity';
+} from '@src/company/domains/entities/company.entity';
 import type { CompanyRecord } from '@src/company/applications/contracts/company-record.interface';
 
 export class CreateCompanyUseCase implements CreateCompanyUseCaseInterface {
